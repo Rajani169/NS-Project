@@ -16,34 +16,11 @@ def toLowerCase(text):
 
 
 def removeSpaces(text):
-#     newText = ""
-#     for i in text:
-#         if i == " ":
-#             continue
-#         else:
-#             newText = newText + i
-    
     return text.replace(" ","")
 
-# Function to group 2 elements of a string
-# as a list element
+# Function to group 2 elements of a string as a list element
 
-#code by gfg
-# def Diagraph(text):
-# 	Diagraph = []
-#     i=0
-#     while len(text):
-#         Diagraph.append(text[0:2])
-#         text = text[2:]
-# # 	group = 0
-# # 	for i in range(2, len(text), 2):
-# # 		Diagraph.append(text[group:i])
 
-# # 		group = i
-# # 	Diagraph.append(text[group:])
-# 	return Diagraph
-
-#code by me
 def Diagraph(text):
     Diagraph = []
 
@@ -55,28 +32,6 @@ def Diagraph(text):
 # Function to fill a letter in a string element
 # If 2 letters in the same string matches
 
-#gfg code
-# def FillerLetter(text):
-#     k = len(text)
-#     if k % 2 == 0:
-#         for i in range(0, k, 2):
-#             if text[i] == text[i+1]:
-#                 new_word = text[0:i+1] + str('x') + text[i+1:]
-#                 new_word = FillerLetter(new_word)
-#                 break
-#             else:
-#                 new_word = text
-#     else:
-#         for i in range(0, k-1, 2):
-#             if text[i] == text[i+1]:
-#                 new_word = text[0:i+1] + str('x') + text[i+1:]
-#                 new_word = FillerLetter(new_word)
-#                 break
-#             else:
-#                 new_word = text
-#     return new_word
-
-#my code
 def FillerLetter(text):
     i=0
     while(i!=len(text)-1):
@@ -149,7 +104,6 @@ def encrypt_RectangleRule(matr, e1r, e1c, e2r, e2c):
 
     char1 = matr[e1r][e2c]
 
-
     char2 = matr[e2r][e1c]
 
     return char1, char2
@@ -198,16 +152,6 @@ CipherText = encryptByPlayfairCipher(Matrix, PlainTextList)
 # 	CipherText += i
 print("CipherText:", CipherText)
 
-# This code is Contributed by Boda_Venkata_Nikith
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
 
 
 
