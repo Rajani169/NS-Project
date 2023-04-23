@@ -20,3 +20,11 @@
     background-repeat: no-repeat;
     background-size: cover; 
 }
+
+td {
+  color: white;
+}
+
+.sequence {
+  color:white
+}
