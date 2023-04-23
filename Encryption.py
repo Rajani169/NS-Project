@@ -3,6 +3,13 @@ app = Flask(__name__)
 app.debug = True
 import random,sys,decimal
 from math import ceil
+import random
+from utils import *
+from Boxes import *
+from DES_Algorithm import DES
+from Double_des import do_encryption
+
+RSA_keys = []
 
 list1 = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'k', 'l', 'm',
             'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
@@ -16,17 +23,47 @@ def index():
         global plaintext
         global algo
         global key
-        plaintext = request.form.get("plaintext")
-        algo = request.form.get("algo")
-        key = request.form.get("key")
-        print(algo)
-        cipher = choose_algo(plaintext,algo,key)
-        return render_template('try.html', cipher = cipher)
+        # plaintext = request.form.get("plaintext")
+        
+        # key = request.form.get("key")
 
-def choose_algo(plaintext,algo,key):
-    print(algo)
+        plaintext = request.files['plaintext']
+        key = request.files['key']
+        algo = request.form.get("algo")
+        pt_array = []
+        key_array = []
+        with open(plaintext.filename, 'r') as f:
+            lines = f.readlines()
+        pt_array = [line.strip() for line in lines]
+        
+        if key.filename != "":
+            with open(key.filename, 'r') as f:
+                lines = f.readlines()
+            key_array = [line.strip() for line in lines]
+        print(pt_array,key_array,algo)
+
+        cipher_array = []
+        
+        if key.filename != "":
+            for i in range(len(pt_array)):
+                cipher = choose_algo(pt_array[i],algo,key_array[i])
+                cipher_array.append(cipher)
+        else:
+            for i in range(len(pt_array)):
+                cipher = choose_algo(pt_array[i],algo)
+                cipher_array.append(cipher)
+        print(cipher_array)
+        with open(r'D:\Downloads\NS-Project-master\NS-Project-master\cipher_file.txt', 'w') as f:
+        # Write each line of the array to the output file
+            for line in cipher_array:
+                f.write(str(line) + '\n')
+        
+        return render_template('try.html', data = {'cipher' : cipher_array, 'algo' : algo, 'key': key_array})
+
+def choose_algo(plaintext,algo,key=None):
+    # print(algo)
     if algo== "DES":
-        pass
+        cipher = Double_des.do_encryption(plaintext)
         # x = DES(plaintext,key)
         # cipher = x.encrypt()
     elif algo == "Vigenere":
@@ -99,12 +136,14 @@ class PF:
 
     def FillerLetter(self,text):
         i=0
-        while(i!=len(text)-1):
-            if text[i]==text[i+1]:
+        while(i<len(text)):
+            if i+1 == len(text):
+                text+= 'x'
+            elif text[i]==text[i+1]:
                 text=text[:i+1] +'x' + text[i+1:]
             i+=2
-        if len(text)%2 !=0:
-            text+= 'x'
+        # if len(text)%2 !=0:
+            
         return text
 
 
@@ -191,6 +230,7 @@ class PF:
         return CipherText
 
     def Encrypt(self,plaintext,key):
+        
     # text_Plain = 'instruments'
         text_Plain = self.removeSpaces(self.toLowerCase(plaintext))
         PlainTextList = self.Diagraph(self.FillerLetter(text_Plain))
@@ -247,9 +287,7 @@ class RSA:
             a = self.randomBitsGenerator(n.bit_length())
             while a not in range(2, n - 2 + 1):
                 a = self.randomBitsGenerator(n.bit_length())
-            print(a)
-            print(d)
-            print(n)
+            
             # a = decimal.Decimal(a)
             # d = decimal.Decimal(d)
             # x = a**d
@@ -295,9 +333,9 @@ class RSA:
     def Encryption_RSA(self,plaintext):
         key_size = 1024
         prime_number_bit_length = key_size // 2
-        print(plaintext)
+        # print(plaintext)
         pt_in_bytes = bytes(plaintext, 'utf-8')
-        print(pt_in_bytes)
+        # print(pt_in_bytes)
         p = self.primeGenerator(prime_number_bit_length)
         q = self.primeGenerator(prime_number_bit_length)
 
@@ -306,8 +344,9 @@ class RSA:
         e = 65537
         d = self.calculatePrivateKey(e, p, q)
         public_key = (e,n)
+        RSA_keys.append(public_key)
         pt_in_bytes = bytes(plaintext, 'utf-8')
-        print(pt_in_bytes)
+        # print(pt_in_bytes)
         ciphertext = self.encrypt(pt_in_bytes, e, n)
         
         return ciphertext
